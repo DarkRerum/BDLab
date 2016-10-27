@@ -2,6 +2,7 @@ import java.sql.*;
 import java.io.*;
 import oracle.jdbc.driver.OracleDriver;
 import valve.steam.Steam;
+import valve.steam.Language;
 import valve.util.PasswordExtractor;
 
 public class Main {
@@ -18,6 +19,7 @@ public class Main {
 			Steam.getInstance().resetConnection("jdbc:oracle:thin:@localhost:1521:orbis", passwordExtractor.getUsername(),
 				passwordExtractor.getPassword());
 			//Steam.getInstance().createAccount("WKLE", "EWeq", "email@mail.mail");
+			Language l = new Language("de");
 		}
 		catch (IOException ioEx) {
 			System.out.println(ioEx.getMessage()); 

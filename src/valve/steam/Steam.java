@@ -29,7 +29,7 @@ public class Steam {
 	
 	private Steam() {}
 	
-	public void resetConnection(String dbAddress, String username, String password) throws IOException,
+	public synchronized void resetConnection(String dbAddress, String username, String password) throws IOException,
 			ClassNotFoundException, SQLException {
 		
 		
@@ -49,7 +49,10 @@ public class Steam {
 		}
 	}	
 	
-	public long createAccount(String name, String username, String email) {
+	public Connection getConnection() {
+		return m_connection;
+	}
+	/*public long createAccount(String name, String username, String email) {
 		String sql = "INSERT INTO accounts(name, username, email, lang_id) " +
                    "VALUES ('" + name + "','" + username + "','" + email + "',1)";
 		try { 
@@ -60,6 +63,6 @@ public class Steam {
 			return 0;
 		}
 		return 0;
-	}
+	}*/
 		
 }
