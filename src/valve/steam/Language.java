@@ -37,7 +37,7 @@ public class Language {
 		return m_languageName;
 	}
 	
-	public static Language getLanguageFromName(String name) throws SQLException {
+	public static Language getFromName(String name) throws SQLException {
 		String query = "SELECT id FROM languages WHERE name=?";	
 		
 		PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
@@ -45,6 +45,19 @@ public class Language {
 		ResultSet queryResult = ps.executeQuery();
 		queryResult.next();
 		long id = queryResult.getLong(1);
+		
+		Language l = new Language(id, name);
+		return l;
+	}
+	
+	public static Language getFromId(long id) throws SQLException {
+		String query = "SELECT name FROM languages WHERE id=?";	
+		
+		PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
+		ps.setLong(1, id);
+		ResultSet queryResult = ps.executeQuery();
+		queryResult.next();
+		String name = queryResult.getString(1);
 		
 		Language l = new Language(id, name);
 		return l;

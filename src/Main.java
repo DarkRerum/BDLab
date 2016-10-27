@@ -1,8 +1,9 @@
-import java.sql.*;
 import java.io.*;
+import java.sql.*;
 import oracle.jdbc.driver.OracleDriver;
-import valve.steam.Steam;
+import valve.steam.Account;
 import valve.steam.Language;
+import valve.steam.Steam;
 import valve.util.PasswordExtractor;
 
 public class Main {
@@ -19,9 +20,16 @@ public class Main {
 			Steam.getInstance().resetConnection("jdbc:oracle:thin:@localhost:1521:orbis", passwordExtractor.getUsername(),
 				passwordExtractor.getPassword());
 			//Steam.getInstance().createAccount("WKLE", "EWeq", "email@mail.mail");
-			Language l = Language.getLanguageFromName("en");
+			Language l = Language.getFromName("en");
 			System.out.println(l.getId());
 			System.out.println(l.getName());
+			
+			Account a = Account.getFromName("rerum");
+			System.out.println(a.getId());
+			System.out.println(a.getName());
+			System.out.println(a.getUserName());
+			System.out.println(a.getEmail());
+			System.out.println(a.getLanguage().getName());
 			
 		}
 		catch (IOException ioEx) {
