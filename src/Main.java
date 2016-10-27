@@ -20,6 +20,7 @@ public class Main {
 				passwordExtractor.getPassword());
 			//Steam.getInstance().createAccount("WKLE", "EWeq", "email@mail.mail");
 			Language l = new Language("de");
+			System.out.println(l.getId());
 		}
 		catch (IOException ioEx) {
 			System.out.println(ioEx.getMessage()); 

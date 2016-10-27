@@ -17,16 +17,22 @@ public class Language {
 		cs.registerOutParameter(2, OracleTypes.NUMBER);
 		cs.execute();
 		//System.out.println(cs.getInt(2));
-		m_id = cd.getLong(2);
+		m_id = cs.getLong(2);
 		m_languageName = name;
 		Steam.getInstance().getConnection().commit();
 	}
 	
-	public long getLanguageId() {
+	public long getId() {
 		return m_id;
 	}
 	
-	public long getLanguageName() {
+	public String getLanguageName() {
 		return m_languageName;
 	}
+	
+	/*public static Language getLanguageFromName(String name) {
+		PreparedStatement preparedStatement = Steam.getInstance().getConnection().prepareStatement(query);
+		
+		
+	}*/
 }
