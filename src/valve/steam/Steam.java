@@ -9,9 +9,6 @@ public class Steam {
 	private static volatile Steam m_instance;
 
 	private Connection m_connection = null;
-	private Statement statement = null;
-	private String dbUser = null;
-	private String dbPass = null;	
 	
 	// Singletron implementation via Double Checked Locking & volatile method
 	public static Steam getInstance() {
@@ -43,26 +40,10 @@ public class Steam {
 		if (m_connection == null) {
 			throw new SQLException("Failed to make connection!");
 		}
-		statement = m_connection.createStatement();
-		if (statement == null) {
-			throw new SQLException("Failed to make statement!");
-		}
+	
 	}	
 	
 	public Connection getConnection() {
 		return m_connection;
-	}
-	/*public long createAccount(String name, String username, String email) {
-		String sql = "INSERT INTO accounts(name, username, email, lang_id) " +
-                   "VALUES ('" + name + "','" + username + "','" + email + "',1)";
-		try { 
-			statement.executeUpdate(sql);
-		}
-		catch (SQLException sqlEx) {
-			sqlEx.printStackTrace();
-			return 0;
-		}
-		return 0;
-	}*/
-		
+	}	
 }
