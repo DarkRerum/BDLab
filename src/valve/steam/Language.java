@@ -1,8 +1,10 @@
 package valve.steam;
 
 import java.sql.CallableStatement;
-import oracle.jdbc.OracleTypes;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import oracle.jdbc.OracleTypes;
 
 public class Language {
 	private long m_id;
@@ -22,17 +24,29 @@ public class Language {
 		Steam.getInstance().getConnection().commit();
 	}
 	
+	private Language(long id, String languageName) {
+		m_id = id;
+		m_languageName = languageName;
+	}
+	
 	public long getId() {
 		return m_id;
 	}
 	
-	public String getLanguageName() {
+	public String getName() {
 		return m_languageName;
 	}
 	
-	/*public static Language getLanguageFromName(String name) {
-		PreparedStatement preparedStatement = Steam.getInstance().getConnection().prepareStatement(query);
+	public static Language getLanguageFromName(String name) throws SQLException {
+		String query = "SELECT id FROM languages WHERE name=?";	
 		
+		PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
+		ps.setString(1, name);
+		ResultSet queryResult = ps.executeQuery();
+		queryResult.next();
+		long id = queryResult.getLong(1);
 		
-	}*/
+		Language l = new Language(id, name);
+		return l;
+	}
 }

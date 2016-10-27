@@ -19,8 +19,10 @@ public class Main {
 			Steam.getInstance().resetConnection("jdbc:oracle:thin:@localhost:1521:orbis", passwordExtractor.getUsername(),
 				passwordExtractor.getPassword());
 			//Steam.getInstance().createAccount("WKLE", "EWeq", "email@mail.mail");
-			Language l = new Language("de");
+			Language l = Language.getLanguageFromName("en");
 			System.out.println(l.getId());
+			System.out.println(l.getName());
+			
 		}
 		catch (IOException ioEx) {
 			System.out.println(ioEx.getMessage()); 
