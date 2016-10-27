@@ -2,14 +2,15 @@ all: compile run
 
 LIBPATH = ./lib/ojdbc6.jar
 
-SRCPATH = ./src:./src/valve/steam:./src/valve/util
 DESTPATH = ./bin
-
-#SRCFILES = ./src/*.java ./src/*/*/*.java
+CLASSPATH = ./bin:./bin/valve/steam:./bin/valve/util
 
 compile:
-	javac -cp .:$(SRCPATH):$(LIBPATH) -d $(DESTPATH) ./src/valve/util/*.java	
-	javac -cp .:$(SRCPATH):$(LIBPATH) -d $(DESTPATH) ./src/valve/steam/*.java
-	javac -cp .:$(SRCPATH):$(LIBPATH) -d $(DESTPATH) ./src/*.java	
+	javac -cp .:$(CLASSPATH):$(LIBPATH) -d $(DESTPATH) ./src/valve/util/*.java	
+	javac -cp .:$(CLASSPATH):$(LIBPATH) -d $(DESTPATH) ./src/valve/steam/*.java
+	javac -cp .:$(CLASSPATH):$(LIBPATH) -d $(DESTPATH) ./src/*.java	
 run:
-	java -cp .:$(SRCPATH):$(LIBPATH) Main
+	java -cp .:$(CLASSPATH):$(LIBPATH) Main
+
+#SRCPATH = ./src:./src/valve/steam:./src/valve/util
+#SRCFILES = ./src/*.java ./src/*/*/*.java

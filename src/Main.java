@@ -1,18 +1,23 @@
 import java.sql.*;
 import java.io.*;
 import oracle.jdbc.driver.OracleDriver;
-import valve.steam.SteamAPI;
+import valve.steam.Steam;
 import valve.util.PasswordExtractor;
 
 public class Main {
-	//empty comment
+	
 	public static void main(String[] args) {
-		SteamAPI api = null;
+		//SteamAPI api = null;
 		
 		PasswordExtractor passwordExtractor = new PasswordExtractor();			
 		
+
+		
 		try {
-			api = new SteamAPI("jdbc:oracle:thin:@localhost:1521:orbis", passwordExtractor.getUsername(), passwordExtractor.getPassword());
+			//api = new SteamAPI("jdbc:oracle:thin:@localhost:1521:orbis", passwordExtractor.getUsername(), passwordExtractor.getPassword());
+			Steam.getInstance().resetConnection("jdbc:oracle:thin:@localhost:1521:orbis", passwordExtractor.getUsername(),
+				passwordExtractor.getPassword());
+			//Steam.getInstance().createAccount("WKLE", "EWeq", "email@mail.mail");
 		}
 		catch (IOException ioEx) {
 			System.out.println(ioEx.getMessage()); 
@@ -23,6 +28,6 @@ public class Main {
 		catch (SQLException sqlEx) {
 			System.out.println(sqlEx.getMessage()); 
 		}
-		api.createAccount("WKLE", "EWeq", "email@mail.mail");
+		//api.createAccount("WKLE", "EWeq", "email@mail.mail");
 	}
 }
