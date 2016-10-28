@@ -47,46 +47,68 @@ public class Account {
 		m_phoneNumber = phoneNumber;
 		m_language = language;
 	}
+
+	private Account (long id) throws SQLException {
+		loadDataFromDB();
+	}
 	
-	public long getId() {
+	public long getId() throws SQLException {
+		loadDataFromDB();
 		return m_id;
 	}
 	
-	public String getName() {
+	public String getName()throws SQLException {
+		loadDataFromDB();
 		return m_accountName;
 	}
 	
-	public String getUserName() {
+	public String getUserName() throws SQLException {
+		loadDataFromDB();
 		return m_userName;
 	}
 	
-	public String getEmail() {
+	public String getEmail() throws SQLException{
+		loadDataFromDB();
 		return m_email;
 	}
 	
-	public long getPhoneNumber() {
+	public long getPhoneNumber()throws SQLException {
+		loadDataFromDB();
 		return m_phoneNumber;
 	}
 	
-	public Language getLanguage() {
+	public Language getLanguage() throws SQLException {
+		loadDataFromDB();
 		return m_language;
 	}
 	
 	public static Account getFromName(String name) throws SQLException {
-		String query = "SELECT * FROM accounts WHERE name=?";	
+		String query = "SELECT id FROM accounts WHERE name=?";
 		
 		PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
 		ps.setString(1, name);
 		ResultSet queryResult = ps.executeQuery();
 		queryResult.next();
 		long id = queryResult.getLong(1);
-		String accountName = queryResult.getString(2);
-		String userName = queryResult.getString(3);
-		String email = queryResult.getString(4);
-		Blob avatar = queryResult.getBlob(5);
-		long phoneNumber = queryResult.getLong(6);
-		long langId = queryResult.getLong(7);		
 		
-		return new Account(id, accountName, userName, email, avatar, phoneNumber, Language.getFromId(langId));
+		return new Account(id);
+	}
+
+	private void loadDataFromDB() throws SQLException {
+		String query = "SELECT * FROM accounts WHERE id=?";
+
+		PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
+		ps.setLong(1, m_id);
+		ResultSet queryResult = ps.executeQuery();
+		queryResult.next();
+		//long id = queryResult.getLong(1);
+		m_accountName = queryResult.getString(2);
+		m_userName = queryResult.getString(3);
+		m_email = queryResult.getString(4);
+		m_avatar = queryResult.getBlob(5);
+		m_phoneNumber = queryResult.getLong(6);
+		long langId = queryResult.getLong(7);
+
+		m_language = Language.getFromId(langId);
 	}
 }

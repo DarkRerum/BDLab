@@ -1,6 +1,5 @@
 import java.io.*;
 import java.sql.*;
-import oracle.jdbc.driver.OracleDriver;
 import valve.steam.Account;
 import valve.steam.Language;
 import valve.steam.Steam;
@@ -9,11 +8,7 @@ import valve.util.PasswordExtractor;
 public class Main {
 	
 	public static void main(String[] args) {
-		//SteamAPI api = null;
-		
-		PasswordExtractor passwordExtractor = new PasswordExtractor();			
-		
-
+		PasswordExtractor passwordExtractor = new PasswordExtractor();
 		
 		try {
 			//api = new SteamAPI("jdbc:oracle:thin:@localhost:1521:orbis", passwordExtractor.getUsername(), passwordExtractor.getPassword());
