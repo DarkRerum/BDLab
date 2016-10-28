@@ -67,6 +67,16 @@ public class Account {
 		loadDataFromDB();
 		return m_userName;
 	}
+
+	public void setUserName(String newName) throws SQLException {
+		String query = "update accounts set username = ? where id = ?";
+
+		PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
+		ps.setString(1, newName);
+		ps.setLong(2, m_id);
+		ps.execute();
+		Steam.getInstance().getConnection().commit();
+	}
 	
 	public String getEmail() throws SQLException{
 		loadDataFromDB();
@@ -84,7 +94,7 @@ public class Account {
 	}
 	
 	public static Account getFromName(String name) throws SQLException {
-		String query = "SELECT id FROM accounts WHERE name=?";
+		String query = "SELECT id FROM accounts WHERE name = ?";
 		
 		PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
 		ps.setString(1, name);

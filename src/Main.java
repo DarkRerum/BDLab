@@ -11,9 +11,8 @@ public class Main {
 		PasswordExtractor passwordExtractor = new PasswordExtractor();
 		
 		try {
-			//api = new SteamAPI("jdbc:oracle:thin:@localhost:1521:orbis", passwordExtractor.getUsername(), passwordExtractor.getPassword());
-			Steam.getInstance().resetConnection("jdbc:oracle:thin:@localhost:1521:orbis", passwordExtractor.getUsername(),
-				passwordExtractor.getPassword());
+			Steam.getInstance().resetConnection("jdbc:oracle:thin:@localhost:1521:orbis",
+					passwordExtractor.getUsername(), passwordExtractor.getPassword());
 			//Steam.getInstance().createAccount("WKLE", "EWeq", "email@mail.mail");
 			Language l = Language.getFromName("en");
 			System.out.println(l.getId());
@@ -25,7 +24,9 @@ public class Main {
 			System.out.println(a.getUserName());
 			System.out.println(a.getEmail());
 			System.out.println(a.getLanguage().getName());
-			
+
+			a.setUserName("BOSS");
+			System.out.println(a.getUserName());
 		}
 		catch (IOException ioEx) {
 			System.out.println(ioEx.getMessage()); 
