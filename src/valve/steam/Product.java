@@ -57,9 +57,9 @@ public class Product {
         String query = "SELECT * FROM products WHERE name = ?";
 
         PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
-        ps.setString(1, name);
-        ResultSet queryResult = ps.executeQuery();
-        queryResult.next();
+		ps.setString(1, name);
+		ResultSet queryResult = ps.executeQuery();
+		queryResult.next();
         long parentID = queryResult.getLong(4);
 
         if (parentID == 0) {
@@ -104,5 +104,25 @@ public class Product {
         //Steam.getInstance().getConnection().commit();
 
         return new Price(currency, price);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Product))
+            return false;
+        if (obj == this)
+            return true;
+
+        Product rhs = (Product) obj;
+        if (this.m_id != rhs.m_id) {
+            return false;
+        }
+        if (!this.m_name.equals(rhs.m_name)) {
+            return false;
+        }
+        if (!this.m_parentProduct.equals(rhs.m_parentProduct)) {
+            return false;
+        }
+        return true;
     }
 }

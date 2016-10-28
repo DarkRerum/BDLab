@@ -108,6 +108,16 @@ public class Account {
 		return new Account(id);
 	}
 
+	public static Account getFromId(long id) throws SQLException {
+		String query = "SELECT id FROM accounts WHERE id = ?";
+		PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
+		ps.setLong(1, id);
+		ResultSet queryResult = ps.executeQuery();
+		queryResult.next();
+
+		return new Account(id);
+	}
+
 	private void loadDataFromDB() throws SQLException {
 		String query = "SELECT * FROM accounts WHERE id=?";
 

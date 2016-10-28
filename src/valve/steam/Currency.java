@@ -30,6 +30,10 @@ public class Currency {
 
     }
 
+    public long getId() {
+        return m_id;
+    }
+
     public String toString() {
         return m_name;
     }

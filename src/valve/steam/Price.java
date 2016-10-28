@@ -11,7 +11,9 @@ public class Price {
 		m_currency = currency;
 		m_value = value;
 	}
-
+    public float getValue() {
+        return m_value;
+    }
 	public String toString() {
 		return m_currency.toString() + " " + m_value;
 	}
