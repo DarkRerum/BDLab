@@ -29,8 +29,8 @@ public class Main {
 			System.out.println(p.getId());
 			System.out.println(p.getName());
 
-			System.out.println(p.getPrice(Currency.getFromName("usd")));
-			*/
+			System.out.println(p.getPrice(Currency.getFromName("usd")));*/
+
 			SteamCLI steamCli = new SteamCLI();
 			steamCli.executeCommand(args);
 		}

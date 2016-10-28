@@ -5,6 +5,9 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import oracle.jdbc.OracleTypes;
 
 public class Account {
@@ -121,5 +124,20 @@ public class Account {
 		long langId = queryResult.getLong(7);
 
 		m_language = Language.getFromId(langId);
+	}
+
+	public List<Product> getOwnedProducts() throws SQLException {
+		String query = "SELECT product_id FROM owned_products WHERE account_id = ?";
+
+		PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
+		ps.setLong(1, m_id);
+		ResultSet queryResult = ps.executeQuery();
+		List<Product> productList = new ArrayList<>();
+
+		while (queryResult.next()) {
+			productList.add(Product.getFromId(queryResult.getLong(1)));
+		}
+
+		return productList;
 	}
 }
