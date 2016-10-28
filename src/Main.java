@@ -1,5 +1,6 @@
 import java.io.*;
 import java.sql.*;
+import java.util.List;
 
 import valve.steam.*;
 import valve.util.PasswordExtractor;
@@ -29,6 +30,12 @@ public class Main {
 			System.out.println(p.getName());
 
 			System.out.println(p.getPrice(Currency.getFromName("usd")));
+
+			List<Product> productList = a.getOwnedProducts();
+
+			for (Product item : productList) {
+				System.out.println(item.getName());
+			}
 
 		}
 		catch (IOException ioEx) {

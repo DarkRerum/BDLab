@@ -71,6 +71,24 @@ public class Product {
         }
     }
 
+    public static Product getFromId(Long id) throws  SQLException, NotImplementedException {
+        String query = "SELECT * FROM products WHERE id = ?";
+
+        PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
+        ps.setLong(1, id);
+        ResultSet queryResult = ps.executeQuery();
+        queryResult.next();
+        long parentID = queryResult.getLong(4);
+
+        if (parentID == 0) {
+            return new Product(queryResult.getLong(1), queryResult.getString(2),
+                    queryResult.getBlob(3), null);
+        }
+        else {
+            throw new NotImplementedException();
+        }
+    }
+
     public Price getPrice(Currency currency) throws SQLException {
         //String query = "? := PKG1.GET_PRICE(?, ?)";
         String query = "{ ? = call PKG1.GET_PRICE(?, ?) }";
