@@ -1,6 +1,7 @@
 package valve.util;
 
 import valve.steam.Account;
+import valve.steam.Currency;
 import valve.steam.Language;
 import valve.steam.Product;
 
@@ -18,6 +19,9 @@ public class SteamCLI {
 				break;
 			case "help":
 				printHelp();
+				break;
+			case "product":
+				processProductCommands(input);
 				break;
 			default:
 				System.err.println(input[0] + ": no such command");
@@ -46,12 +50,41 @@ public class SteamCLI {
 		}
 	}
 
+	private void processProductCommands(String[] input) {
+		if (input.length < 3) {
+			System.out.println("error: insufficient argument count (exepected: steam product <command> <arg1> <arg2> .. <argN>");
+			System.exit(1);
+		}
+
+		switch (input[1]) {
+			case "price":
+				printProductPrice(input[2], input[3]);
+				break;
+			default:
+				System.err.println(input[0] + " " + input[1] + ": no such command");
+		}
+	}
+
+	private  void printProductPrice(String productName, String currency) {
+		try {
+			Currency c = Currency.getFromName(currency);
+			Product p = Product.getFromName(productName);
+			System.out.println(p.getPrice(c));
+		}
+		catch (Exception e) {
+			System.err.println("Could not fetch data for this product and price");
+			System.err.println(e.getMessage());
+			System.exit(1);
+		}
+	}
+
 	public void printHelp() {
 		System.out.println("Available commands: ");
 		System.out.println("help");
+		System.out.println("account add <accountname> <username> <email> <language>");
 		System.out.println("account ownedproducts <accountname>");
 		System.out.println("account printdata <accountname>");
-		System.out.println("account add <accountname> <username> <email> <language>");
+		System.out.println("product price <productname> <currency>");
 
 	}
 
@@ -65,7 +98,7 @@ public class SteamCLI {
 			System.out.println("Account phone number: " + a.getPhoneNumber());
 		}
 		catch (Exception e) {
-			System.err.println("Could not ferch data for this account");
+			System.err.println("Could not fetch data for this account");
 			System.err.println(e.getMessage());
 			System.exit(1);
 		}
