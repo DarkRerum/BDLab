@@ -49,6 +49,7 @@ public class Account {
 	}
 
 	private Account (long id) throws SQLException {
+		m_id = id;
 		loadDataFromDB();
 	}
 	
