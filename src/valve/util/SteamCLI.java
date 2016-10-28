@@ -1,6 +1,10 @@
 package valve.util;
 
 import valve.steam.Account;
+import valve.steam.Language;
+import valve.steam.Product;
+
+import java.util.List;
 
 /**
  * Created by Nikita on 28.10.2016.
@@ -22,8 +26,8 @@ public class SteamCLI {
 	}
 
 	private void processAccountCommands(String[] input) {
-		if (input.length != 3) {
-			System.out.println("error: insufficient argument count (exepected: steam account <command> <account>");
+		if (input.length < 3) {
+			System.out.println("error: insufficient argument count (exepected: steam account <command> <arg1> <arg2> .. <argN>");
 			System.exit(1);
 		}
 
@@ -34,6 +38,9 @@ public class SteamCLI {
 			case "ownedproducts":
 				printOwnedProducts(input[2]);
 				break;
+			case "add":
+				addNewAccount(input);
+				break;
 			default:
 				System.err.println(input[0] + " " + input[1] + ": no such command");
 		}
@@ -42,8 +49,10 @@ public class SteamCLI {
 	public void printHelp() {
 		System.out.println("Available commands: ");
 		System.out.println("help");
-		System.out.println("account printdata <accountname>");
 		System.out.println("account ownedproducts <accountname>");
+		System.out.println("account printdata <accountname>");
+		System.out.println("account add <accountname> <username> <email> <language>");
+
 	}
 
 	private void printAccountData(String accountName) {
@@ -65,11 +74,33 @@ public class SteamCLI {
 	private void printOwnedProducts(String accountName) {
 		try {
 			Account a = Account.getFromName(accountName);
+			List<Product> productList = a.getOwnedProducts();
 
+			if (productList.isEmpty()) {
+				System.out.println(accountName + " owns no products:");
+				System.exit(0);
+			}
+			System.out.println(accountName + " owns these products:");
+
+			for (Product p : productList) {
+				System.out.println(p.getName());
+			}
 		}
 		catch (Exception e) {
-			System.err.println("Could not ferch data for this account");
+			System.err.println("Could not fetch data for this account: " + accountName);
 			System.err.println(e.getMessage());
+			System.exit(1);
+		}
+	}
+
+	private void addNewAccount(String[] input) {
+		try {
+			Language l = Language.getFromName(input[5]);
+			Account a = new Account(input[2], input[3], input[4], l);
+		}
+		catch (Exception e) {
+			System.out.println("Could not create an account");
+			System.out.println(e.getMessage());
 			System.exit(1);
 		}
 	}
