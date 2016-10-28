@@ -3,6 +3,7 @@ import java.sql.*;
 
 import valve.steam.*;
 import valve.util.PasswordExtractor;
+import valve.util.SteamCLI;
 
 public class Main {
 	
@@ -13,7 +14,7 @@ public class Main {
 			Steam.getInstance().resetConnection("jdbc:oracle:thin:@localhost:1521:orbis",
 					passwordExtractor.getUsername(), passwordExtractor.getPassword());
 			//Steam.getInstance().createAccount("WKLE", "EWeq", "email@mail.mail");
-			Language l = Language.getFromName("en");
+			/*Language l = Language.getFromName("en");
 			System.out.println(l.getId());
 			System.out.println(l.getName());
 			
@@ -29,7 +30,9 @@ public class Main {
 			System.out.println(p.getName());
 
 			System.out.println(p.getPrice(Currency.getFromName("usd")));
-
+			*/
+			SteamCLI steamCli = new SteamCLI();
+			steamCli.executeCommand(args);
 		}
 		catch (IOException ioEx) {
 			System.out.println(ioEx.getMessage()); 

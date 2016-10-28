@@ -40,7 +40,7 @@ public class Steam {
 		if (m_connection == null) {
 			throw new SQLException("Failed to make connection!");
 		}
-		System.out.println("AutoCommit: " + m_connection.getAutoCommit());
+		//System.out.println("AutoCommit: " + m_connection.getAutoCommit());
 	}	
 	
 	public Connection getConnection() {
