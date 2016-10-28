@@ -29,7 +29,7 @@ public class Account {
 		cs.execute();
 		//System.out.println(cs.getInt(2));
 		m_id = cs.getLong(5);		
-		Steam.getInstance().getConnection().commit();
+		//Steam.getInstance().getConnection().commit();
 		
 		m_accountName = accountName;
 		m_userName = userName;
@@ -69,13 +69,13 @@ public class Account {
 	}
 
 	public void setUserName(String newName) throws SQLException {
-		String query = "update accounts set username = ? where id = ?";
+		String query = "UPDATE accounts SET username = ? WHERE id = ?";
 
 		PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
 		ps.setString(1, newName);
 		ps.setLong(2, m_id);
 		ps.execute();
-		Steam.getInstance().getConnection().commit();
+		//Steam.getInstance().getConnection().commit();
 	}
 	
 	public String getEmail() throws SQLException{

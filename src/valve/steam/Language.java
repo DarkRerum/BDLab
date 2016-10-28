@@ -21,7 +21,7 @@ public class Language {
 		//System.out.println(cs.getInt(2));
 		m_id = cs.getLong(2);
 		m_languageName = name;
-		Steam.getInstance().getConnection().commit();
+		//Steam.getInstance().getConnection().commit();
 	}
 	
 	private Language(long id, String languageName) {
