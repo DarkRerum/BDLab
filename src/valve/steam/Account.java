@@ -142,7 +142,7 @@ public class Account {
 		PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
 		ps.setLong(1, m_id);
 		ResultSet queryResult = ps.executeQuery();
-		List<Product> productList = new ArrayList<>();
+		List<Product> productList = new ArrayList<Product>();
 
 		while (queryResult.next()) {
 			productList.add(Product.getFromId(queryResult.getLong(1)));
