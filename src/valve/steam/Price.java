@@ -15,4 +15,12 @@ public class Price {
 	public String toString() {
 		return m_currency.toString() + " " + m_value;
 	}
+
+	public float getValue() {
+		return m_value;
+	}
+
+	public Currency getCurrency() {
+		return m_currency;
+	}
 }

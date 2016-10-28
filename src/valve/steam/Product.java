@@ -105,4 +105,17 @@ public class Product {
 
         return new Price(currency, price);
     }
+
+    public void addPrice(Price price) throws SQLException {
+		String query = "{ call STEAM.SET_PRICE(?, ?, ?, ?) }";
+		CallableStatement cs = Steam.getInstance().getConnection().prepareCall(query);
+
+		//cs.registerOutParameter(1, OracleTypes.NUMBER);
+		cs.setString(1, m_name);
+		cs.setFloat(2, price.getValue());
+		cs.setString(3, price.getCurrency().toString());
+		cs.setNull(4, Types.NULL);
+
+		cs.execute();
+    }
 }
