@@ -1,5 +1,7 @@
 import java.io.*;
 import java.sql.*;
+import java.util.List;
+import java.util.Map;
 
 import valve.steam.*;
 import valve.util.PasswordExtractor;
@@ -32,6 +34,23 @@ public class Main {
 			System.out.println(p.getPrice(Currency.getFromName("usd")));
 			//SteamCLI steamCli = new SteamCLI();
 			//steamCli.executeCommand(args);
+
+			List<Product> productList = a.getOwnedProducts();
+            for (Product item : productList) {
+                System.out.println(item.getName());
+            }
+            System.out.println("HEEEEEEEEEEREEEEEEE");
+            Currency currency = Currency.getFromName("usd");
+            Order order = Order.getFromId(54);
+            System.out.println(order.getPurchaseDate());
+            System.out.println(order.getAccount().getName());
+            order.addItemToOrder(p, currency);
+            for(Product pr : order.getProductsInOrder().values()) {
+                System.out.println(pr.getName());
+            }
+            order.removeItemFromOrder(p);
+            System.out.println("End");
+
 		}
 		catch (IOException ioEx) {
 			System.out.println(ioEx.getMessage()); 
