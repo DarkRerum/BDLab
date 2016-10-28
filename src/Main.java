@@ -1,8 +1,7 @@
 import java.io.*;
 import java.sql.*;
-import valve.steam.Account;
-import valve.steam.Language;
-import valve.steam.Steam;
+
+import valve.steam.*;
 import valve.util.PasswordExtractor;
 
 public class Main {
@@ -25,8 +24,12 @@ public class Main {
 			System.out.println(a.getEmail());
 			System.out.println(a.getLanguage().getName());
 
-			a.setUserName("BOSS");
-			System.out.println(a.getUserName());
+			Product p = Product.getFromName("Fallout: New Vegas");
+			System.out.println(p.getId());
+			System.out.println(p.getName());
+
+			System.out.println(p.getPrice(Currency.getFromName("usd")));
+
 		}
 		catch (IOException ioEx) {
 			System.out.println(ioEx.getMessage()); 

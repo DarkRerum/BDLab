@@ -29,4 +29,8 @@ public class Currency {
         return new Currency(queryResult.getLong(1), queryResult.getString(2), queryResult.getFloat(3));
 
     }
+
+    public String toString() {
+        return m_name;
+    }
 }

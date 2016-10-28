@@ -49,6 +49,10 @@ public class Product {
         return m_id;
     }
 
+    public String getName() {
+        return m_name;
+    }
+
     public static Product getFromName(String name) throws  SQLException, NotImplementedException {
         String query = "SELECT * FROM products WHERE name = ?";
 
@@ -67,5 +71,20 @@ public class Product {
         }
     }
 
+    public Price getPrice(Currency currency) throws SQLException {
+        //String query = "? := PKG1.GET_PRICE(?, ?)";
+        String query = "{ ? = call PKG1.GET_PRICE(?, ?) }";
+        CallableStatement cs = Steam.getInstance().getConnection().prepareCall(query);
 
+        cs.registerOutParameter(1, OracleTypes.NUMBER);
+        cs.setString(2, m_name);
+        cs.setString(3, currency.toString());
+
+        cs.execute();
+        //System.out.println(cs.getInt(2));
+        float price = cs.getFloat(1);
+        //Steam.getInstance().getConnection().commit();
+
+        return new Price(currency, price);
+    }
 }
