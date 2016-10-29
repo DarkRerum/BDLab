@@ -112,12 +112,19 @@ public class Order {
     }
 
 	public static Order getFromId(long id) throws SQLException{
-		String query = "SELECT * FROM purchase_orders WHERE id = ?";
+		String query = "SELECT id FROM purchase_orders WHERE id = ?";
 		PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
 		ps.setLong(1, id);
 		ResultSet queryResult = ps.executeQuery();
 		queryResult.next();
-		return new Order(id);
+		long returnId = 0;
+		try {
+			returnId = queryResult.getLong(1);
+		}
+		catch (SQLException sqlEx) {
+			throw new SQLException("There is not such order");
+		}
+		return new Order(returnId);
 	}
 
 	private Order(long id) throws SQLException {
@@ -136,14 +143,22 @@ public class Order {
 		ResultSet queryResult = ps.executeQuery();
 		queryResult.next();
 
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            m_purchaseDate = format.parse(queryResult.getString(3));
-        }
-        catch (ParseException parseEx) {
-            throw new SQLException("Unable to parse date");
-        }
-		long accountId = queryResult.getLong(2);
+		String dateString = queryResult.getString(3);
+
+		if (dateString == null) {
+			DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			try {
+				m_purchaseDate = format.parse(queryResult.getString(3));
+			}
+			catch (ParseException parseEx) {
+				throw new SQLException("Unable to parse date");
+			}
+
+		}
+		else
+		m_purchaseDate = null;
+
+        long accountId = queryResult.getLong(2);
 
 		m_account = Account.getFromId(accountId);
 	}
