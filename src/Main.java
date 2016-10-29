@@ -1,5 +1,7 @@
 import java.io.*;
 import java.sql.*;
+import java.util.List;
+import java.util.Map;
 
 import valve.steam.*;
 import valve.util.PasswordExtractor;
