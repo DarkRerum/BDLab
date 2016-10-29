@@ -53,7 +53,7 @@ public class Order {
         return productMap;
     }
 
-	public long addItemInOrder(Product product, Currency currency) throws SQLException {
+	public long addItemToOrder(Product product, Currency currency) throws SQLException {
 		if (m_purchaseDate != null) {
 			throw new SQLException("Order is closed");
 		}
