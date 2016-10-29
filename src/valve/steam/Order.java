@@ -2,11 +2,13 @@ package valve.steam;
 
 import oracle.jdbc.OracleTypes;
 
-import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Order {
@@ -124,15 +126,24 @@ public class Order {
 	}
 
 	private void loadDataFromDB() throws SQLException{
-		String query = "SELECT id, account_id, purchase_date FROM purchase_orders WHERE id=?";
+		String query = "alter session set nls_date_format = 'YYYY-MM-DD'";
+        PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
+        ps.execute();
 
-		PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
+        query = "SELECT id, account_id, purchase_date FROM purchase_orders WHERE id=?";
+        ps = Steam.getInstance().getConnection().prepareStatement(query);
 		ps.setLong(1, m_id);
 		ResultSet queryResult = ps.executeQuery();
 		queryResult.next();
 
-		m_purchaseDate = queryResult.getDate(2);
-		long accountId = queryResult.getLong(3);
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            m_purchaseDate = format.parse(queryResult.getString(3));
+        }
+        catch (ParseException parseEx) {
+            throw new SQLException("Unable to parse date");
+        }
+		long accountId = queryResult.getLong(2);
 
 		m_account = Account.getFromId(accountId);
 	}

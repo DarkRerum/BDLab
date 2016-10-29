@@ -145,12 +145,9 @@ public class Product {
         if (this.m_id != rhs.m_id) {
             return false;
         }
-        if (!this.m_name.equals(rhs.m_name)) {
+        /*if (!this.m_name.equals(rhs.m_name)) {
             return false;
-        }
-        if (!this.m_parentProduct.equals(rhs.m_parentProduct)) {
-            return false;
-        }
+        }*/
         return true;
     }
 }
