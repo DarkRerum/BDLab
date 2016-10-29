@@ -106,6 +106,9 @@ public class SteamCLI {
 			case "removeitem":
 				removeItemFromOrder(input[2], input[3]);
 				break;
+			case "close":
+				closeOrder(input[2]);
+				break;
 			default:
 				System.err.println(input[0] + " " + input[1] + ": no such command");
 				break;
@@ -131,8 +134,9 @@ public class SteamCLI {
 		System.out.println("account add <accountname> <username> <email> <language>");
 		System.out.println("account ownedproducts <accountname>");
 		System.out.println("account printdata <accountname>");
-		System.out.println("order create <accountname>");
 		System.out.println("order additem <orderid> <productname> <currency>");
+		System.out.println("order close <orderid>");
+		System.out.println("order create <accountname>");
 		System.out.println("order removeitem <orderid> <productname>");
 		System.out.println("price add <productname> <currency> <value>");
 		System.out.println("price remove <productname> <currency>");
@@ -255,6 +259,21 @@ public class SteamCLI {
 			o.removeItemFromOrder(p);
 			//o.addItemToOrder(p, Currency.getFromName(currency));
 			System.out.println("Successfully removed " + productName + " from order #" + id);
+		}
+		catch (Exception e) {
+			System.err.println("Could not remove product from an order");
+			System.err.println(e.getMessage());
+			System.exit(1);
+		}
+	}
+
+	private void closeOrder(String orderIdStr) {
+		try {
+			long id = Long.parseLong(orderIdStr);
+			Order o = Order.getFromId(id);
+			o.closeOrder();
+			//o.addItemToOrder(p, Currency.getFromName(currency));
+			System.out.println("Successfully closed order #" + id);
 		}
 		catch (Exception e) {
 			System.err.println("Could not remove product from an order");
