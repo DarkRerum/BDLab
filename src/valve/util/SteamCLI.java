@@ -100,8 +100,8 @@ public class SteamCLI {
 			case "create":
 				createOrder(input[2]);
 				break;
-			case "remove":
-				removePriceData(input[2], input[3]);
+			case "additem":
+				addItemToOrder(input[2], input[3], input[4]);
 				break;
 			default:
 				System.err.println(input[0] + " " + input[1] + ": no such command");
@@ -128,6 +128,7 @@ public class SteamCLI {
 		System.out.println("account ownedproducts <accountname>");
 		System.out.println("account printdata <accountname>");
 		System.out.println("order create <accountname>");
+		System.out.println("order additem <orderid> <productname> <currency>");
 		System.out.println("price add <productname> <currency> <value>");
 		System.out.println("price remove <productname> <currency>");
 		System.out.println("product price <productname> <currency>");
@@ -221,6 +222,21 @@ public class SteamCLI {
 		}
 		catch (Exception e) {
 			System.err.println("Could not create an order");
+			System.err.println(e.getMessage());
+			System.exit(1);
+		}
+	}
+
+	private void addItemToOrder(String orderIdStr, String productName, String currency) {
+		try {
+			long id = Long.parseLong(orderIdStr);
+			Order o = Order.getFromId(id);
+			Product p = Product.getFromName(productName);
+			o.addItemToOrder(p, Currency.getFromName(currency));
+			System.out.println("Successfully added " + productName + " to order");
+		}
+		catch (Exception e) {
+			System.err.println("Could not add product to an order");
 			System.err.println(e.getMessage());
 			System.exit(1);
 		}
