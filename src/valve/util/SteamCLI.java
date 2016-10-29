@@ -1,9 +1,6 @@
 package valve.util;
 
-import valve.steam.Account;
-import valve.steam.Currency;
-import valve.steam.Language;
-import valve.steam.Product;
+import valve.steam.*;
 
 import java.util.List;
 
@@ -22,6 +19,9 @@ public class SteamCLI {
 				break;
 			case "product":
 				processProductCommands(input);
+				break;
+			case "price":
+				processPriceCommands(input);
 				break;
 			default:
 				System.err.println(input[0] + ": no such command");
@@ -65,6 +65,24 @@ public class SteamCLI {
 		}
 	}
 
+	private void processPriceCommands(String[] input) {
+		if (input.length < 3) {
+			System.out.println("error: insufficient argument count (exepected: steam price <command> <arg1> <arg2> .. <argN>");
+			System.exit(1);
+		}
+
+		switch (input[1]) {
+			case "add":
+				addPriceData(input[2], input[3], input[4]);
+				break;
+			case "remove":
+				removePriceData(input[2], input[3]);
+				break;
+			default:
+				System.err.println(input[0] + " " + input[1] + ": no such command");
+		}
+	}
+
 	private  void printProductPrice(String productName, String currency) {
 		try {
 			Currency c = Currency.getFromName(currency);
@@ -85,7 +103,8 @@ public class SteamCLI {
 		System.out.println("account ownedproducts <accountname>");
 		System.out.println("account printdata <accountname>");
 		System.out.println("product price <productname> <currency>");
-
+		System.out.println("price add <productname> <currency> <value>");
+		System.out.println("price remove <productname> <currency>");
 	}
 
 	private void printAccountData(String accountName) {
@@ -132,8 +151,39 @@ public class SteamCLI {
 			Account a = new Account(input[2], input[3], input[4], l);
 		}
 		catch (Exception e) {
-			System.out.println("Could not create an account");
-			System.out.println(e.getMessage());
+			System.err.println("Could not create an account");
+			System.err.println(e.getMessage());
+			System.exit(1);
+		}
+	}
+
+	private void addPriceData(String productName, String currency, String value) {
+		try {
+			Product p = Product.getFromName(productName);
+			Currency c = Currency.getFromName(currency);
+			float v = Float.parseFloat(value);
+
+			Price price = new Price(c, v);
+
+			p.addPrice(price);
+		}
+		catch (Exception e) {
+			System.err.println("Could not add a price");
+			System.err.println(e.getMessage());
+			System.exit(1);
+		}
+	}
+
+	private void removePriceData(String productName, String currency) {
+		try {
+			Product p = Product.getFromName(productName);
+			Currency c = Currency.getFromName(currency);
+
+			p.removePrice(c);
+		}
+		catch (Exception e) {
+			System.err.println("Could not remove a price");
+			System.err.println(e.getMessage());
 			System.exit(1);
 		}
 	}

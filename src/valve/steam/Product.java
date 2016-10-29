@@ -109,17 +109,30 @@ public class Product {
     }
 
     public void addPrice(Price price) throws SQLException {
-		String query = "{ call STEAM.SET_PRICE(?, ?, ?, ?) }";
+		String query = "{ ? = call STEAM.SET_PRICE(?, ?, ?, ?) }";
 		CallableStatement cs = Steam.getInstance().getConnection().prepareCall(query);
 
-		//cs.registerOutParameter(1, OracleTypes.NUMBER);
-		cs.setString(1, m_name);
-		cs.setFloat(2, price.getValue());
-		cs.setString(3, price.getCurrency().toString());
-		cs.setNull(4, Types.NULL);
+		cs.registerOutParameter(1, OracleTypes.NUMBER);
+		cs.setString(2, m_name);
+		cs.setFloat(3, price.getValue());
+		cs.setString(4, price.getCurrency().toString());
+		cs.setNull(5, Types.NULL);
 
 		cs.execute();
     }
+
+    public void removePrice(Currency currency) throws SQLException {
+		String query = "{ ? = call STEAM.REMOVE_PRICE(?, ?) }";
+		CallableStatement cs = Steam.getInstance().getConnection().prepareCall(query);
+
+		cs.registerOutParameter(1, OracleTypes.NUMBER);
+		cs.setString(2, m_name);
+		cs.setString(3, currency.toString());
+		/*cs.setString(4, price.getCurrency().toString());
+		cs.setNull(5, Types.NULL);*/
+
+		cs.execute();
+	}
 
     @Override
     public boolean equals(Object obj) {
