@@ -10,6 +10,10 @@ import java.util.List;
 public class SteamCLI {
 
 	public void executeCommand(String[] input) {
+		if (input.length < 1) {
+			System.out.println("error: no Steam command supplied");
+			System.exit(2);
+		}
 		switch (input[0]) {
 			case "account":
 				processAccountCommands(input);
