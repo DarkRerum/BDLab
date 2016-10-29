@@ -27,6 +27,9 @@ public class SteamCLI {
 			case "price":
 				processPriceCommands(input);
 				break;
+			case "order":
+				processOrderCommands(input);
+				break;
 			default:
 				System.err.println(input[0] + ": no such command");
 				System.exit(1);
@@ -87,6 +90,24 @@ public class SteamCLI {
 		}
 	}
 
+	private void processOrderCommands(String[] input) {
+		if (input.length < 3) {
+			System.out.println("error: insufficient argument count (exepected: steam order <command> <arg1> <arg2> .. <argN>");
+			System.exit(1);
+		}
+
+		switch (input[1]) {
+			case "create":
+				createOrder(input[2]);
+				break;
+			case "remove":
+				removePriceData(input[2], input[3]);
+				break;
+			default:
+				System.err.println(input[0] + " " + input[1] + ": no such command");
+		}
+	}
+
 	private  void printProductPrice(String productName, String currency) {
 		try {
 			Currency c = Currency.getFromName(currency);
@@ -106,9 +127,10 @@ public class SteamCLI {
 		System.out.println("account add <accountname> <username> <email> <language>");
 		System.out.println("account ownedproducts <accountname>");
 		System.out.println("account printdata <accountname>");
-		System.out.println("product price <productname> <currency>");
+		System.out.println("order create <accountname>");
 		System.out.println("price add <productname> <currency> <value>");
 		System.out.println("price remove <productname> <currency>");
+		System.out.println("product price <productname> <currency>");
 	}
 
 	private void printAccountData(String accountName) {
@@ -187,6 +209,18 @@ public class SteamCLI {
 		}
 		catch (Exception e) {
 			System.err.println("Could not remove a price");
+			System.err.println(e.getMessage());
+			System.exit(1);
+		}
+	}
+
+	private void createOrder(String accountName) {
+		try {
+			Order o = new Order(Account.getFromName(accountName));
+			System.out.println("Created an order with id " + o.getId());
+		}
+		catch (Exception e) {
+			System.err.println("Could not create an order");
 			System.err.println(e.getMessage());
 			System.exit(1);
 		}

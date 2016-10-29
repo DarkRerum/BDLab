@@ -29,7 +29,9 @@ public class Order {
 		m_purchaseDate = null;
 	}
 
-
+    public long getId() {
+        return m_id;
+    }
 
 	public Date getPurchaseDate() {
 		return m_purchaseDate;
