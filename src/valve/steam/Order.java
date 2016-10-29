@@ -145,10 +145,10 @@ public class Order {
 
 		String dateString = queryResult.getString(3);
 
-		if (dateString == null) {
+		if (dateString != null) {
 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 			try {
-				m_purchaseDate = format.parse(queryResult.getString(3));
+				m_purchaseDate = format.parse(dateString);
 			}
 			catch (ParseException parseEx) {
 				throw new SQLException("Unable to parse date");
