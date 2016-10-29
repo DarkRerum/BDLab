@@ -95,6 +95,32 @@ public class Account {
 		loadDataFromDB();
 		return m_language;
 	}
+
+	public void unlockAchievement(Achievement achievement) throws SQLException {
+		String query = "{ ? = call STEAM.UNLOCK_ACHIEVEMENT(?,?,?) }";
+		CallableStatement cs = Steam.getInstance().getConnection().prepareCall(query);
+		cs.registerOutParameter(1, OracleTypes.NUMBER);
+		cs.setString(2, m_accountName);
+		cs.setString(3, achievement.getProduct().getName());
+		cs.setLong(4, achievement.getId());
+
+		cs.execute();
+	}
+
+	public List<Achievement> getUnlockedAchievements() throws SQLException{
+		List<Achievement> achievements = new ArrayList<Achievement>();
+		String query = "SELECT id FROM achievements WHERE id IN (SELECT achievement_id FROM unlocked_achievements " +
+				"WHERE account_id = ?)";
+		PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
+
+		ps.setLong(1, m_id);
+		ResultSet queryResult = ps.executeQuery();
+
+		while (queryResult.next()) {
+			achievements.add(Achievement.getFromId(queryResult.getLong(1)));
+		}
+		return  achievements;
+	}
 	
 	public static Account getFromName(String name) throws SQLException {
 		String query = "SELECT id FROM accounts WHERE name = ?";

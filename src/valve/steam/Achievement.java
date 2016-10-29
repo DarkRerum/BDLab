@@ -26,6 +26,10 @@ public class Achievement {
 		return m_id;
 	}
 
+	public Product getProduct() {
+		return m_product;
+	}
+
 	public String getName(Language language) throws SQLException{
 		String query = "SELECT ach_name FROM achievement_names WHERE achievement_id = ? AND " +
 				"lang_id = ?";

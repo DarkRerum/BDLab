@@ -16,9 +16,13 @@ public class Main {
 			Steam.getInstance().resetConnection("jdbc:oracle:thin:@localhost:1521:orbis",
 					passwordExtractor.getUsername(), passwordExtractor.getPassword());
 			//Steam.getInstance().createAccount("WKLE", "EWeq", "email@mail.mail");
-			Language l = Language.getFromName("en");
-			System.out.println(l.getId());
-			System.out.println(l.getName());
+			Language english = Language.getFromName("en");
+			System.out.println(english.getId());
+			System.out.println(english.getName());
+
+			Language russian = Language.getFromName("ru");
+			System.out.println(russian.getId());
+			System.out.println(russian.getName());
 			
 			Account a = Account.getFromName("rerum");
 			System.out.println(a.getId());
@@ -28,6 +32,10 @@ public class Main {
 			System.out.println(a.getLanguage().getName());
 
 			Product p = Product.getFromName("Fallout: New Vegas");
+			System.out.println(p.getId());
+			System.out.println(p.getName());
+
+			Product p1 = Product.getFromName("Skyrim");
 			System.out.println(p.getId());
 			System.out.println(p.getName());
 
@@ -41,14 +49,17 @@ public class Main {
             }
             System.out.println("HEEEEEEEEEEREEEEEEE");
             Currency currency = Currency.getFromName("usd");
-            Order order = Order.getFromId(54);
-            System.out.println(order.getPurchaseDate());
-            System.out.println(order.getAccount().getName());
-            order.addItemToOrder(p, currency);
-            for(Product pr : order.getProductsInOrder().values()) {
-                System.out.println(pr.getName());
-            }
-            order.removeItemFromOrder(p);
+            Order order = Order.getFromId(61);
+
+			for(Achievement ach : p.getAchievements()) {
+				System.out.println(ach.getName(english));
+			}
+			//a.unlockAchievement(Achievement.getFromName(p, "New Kid"));
+			System.out.println("dsaaaaaaaa");
+			for (Achievement ach : a.getUnlockedAchievements()) {
+				System.out.println(ach.getName(english));
+			}
+
             System.out.println("End");
 
 		}

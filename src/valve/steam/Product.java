@@ -4,6 +4,8 @@ import oracle.jdbc.OracleTypes;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Nikita on 28.10.2016.
@@ -132,6 +134,20 @@ public class Product {
 		cs.setNull(5, Types.NULL);*/
 
 		cs.execute();
+	}
+
+	public List<Achievement> getAchievements() throws SQLException{
+		List<Achievement> achievements = new ArrayList<Achievement>();
+		String query = "SELECT id FROM achievements WHERE product_id = ?";
+		PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
+
+		ps.setLong(1, m_id);
+		ResultSet queryResult = ps.executeQuery();
+
+		while (queryResult.next()) {
+			achievements.add(Achievement.getFromId(queryResult.getLong(1)));
+		}
+		return  achievements;
 	}
 
     @Override
