@@ -43,7 +43,7 @@ public class Order {
         PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
         ps.setLong(1, m_id);
         ResultSet queryResult = ps.executeQuery();
-        Map<Long, Product> productMap = new TreeMap<>();
+        Map<Long, Product> productMap = new TreeMap<Long, Product>();
 
         while (queryResult.next()) {
             productMap.put(queryResult.getLong(1),Product.getFromId(queryResult.getLong(2)));
