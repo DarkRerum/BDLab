@@ -49,6 +49,9 @@ public class SteamCLI {
 			case "ownedproducts":
 				printOwnedProducts(input[2]);
 				break;
+			case "printach":
+				printAccountAchievements(input[2], input[3]);
+				break;
 			case "add":
 				addNewAccount(input);
 				break;
@@ -157,6 +160,7 @@ public class SteamCLI {
 		System.out.println("account add <accountname> <username> <email> <language>");
 		System.out.println("account ownedproducts <accountname>");
 		System.out.println("account printdata <accountname>");
+		System.out.println("account printach <accountname> <language>");
 		System.out.println("order additem <orderid> <productname> <currency>");
 		System.out.println("order close <orderid>");
 		System.out.println("order create <accountname>");
@@ -196,6 +200,33 @@ public class SteamCLI {
 
 			for (Product p : productList) {
 				System.out.println(p.getName());
+			}
+		}
+		catch (Exception e) {
+			System.err.println("Could not fetch data for this account: " + accountName);
+			System.err.println(e.getMessage());
+			System.exit(1);
+		}
+	}
+
+	private void printAccountAchievements(String accountName, String languageStr) {
+		try {
+			Account acc = Account.getFromName(accountName);
+			List<Achievement> achList = acc.getUnlockedAchievements();
+			Language l = Language.getFromName(languageStr);
+
+			if (achList.isEmpty()) {
+				System.out.println(accountName + " no unlocked achievements");
+				System.exit(0);
+			}
+			System.out.println(accountName + " unlocked these achievements: ");
+
+			for (Achievement a : achList) {
+				Product p = a.getProduct();
+				String name = a.getName(l);
+				if (name != null) {
+					System.out.println(p.getName() + " " + a.getName(l) + " " + a.getDescription(l, false));
+				}
 			}
 		}
 		catch (Exception e) {
