@@ -55,6 +55,9 @@ public class SteamCLI {
 			case "add":
 				addNewAccount(input);
 				break;
+			case "unlockach":
+				unlockAchievement(input[2], input[3], input[4]);
+				break;
 			default:
 				System.err.println(input[0] + " " + input[1] + ": no such command");
 		}
@@ -161,6 +164,7 @@ public class SteamCLI {
 		System.out.println("account ownedproducts <accountname>");
 		System.out.println("account printdata <accountname>");
 		System.out.println("account printach <accountname> <language>");
+		System.out.println("account unlockach <accountname> <productname> <achname>");
 		System.out.println("order additem <orderid> <productname> <currency>");
 		System.out.println("order close <orderid>");
 		System.out.println("order create <accountname>");
@@ -231,6 +235,21 @@ public class SteamCLI {
 		}
 		catch (Exception e) {
 			System.err.println("Could not fetch data for this account: " + accountName);
+			System.err.println(e.getMessage());
+			System.exit(1);
+		}
+	}
+
+	private void unlockAchievement(String accountName, String productName, String achName) {
+		try {
+			Account acc = Account.getFromName(accountName);
+			Product p = Product.getFromName(productName);
+			Achievement ach = Achievement.getFromName(p, achName);
+			acc.unlockAchievement(ach);
+			System.out.println("Success!");
+		}
+		catch (Exception e) {
+			System.err.println("Could not unlock achievement");
 			System.err.println(e.getMessage());
 			System.exit(1);
 		}
