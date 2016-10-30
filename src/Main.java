@@ -26,8 +26,7 @@ public class Main {
 			System.out.println(cnfEx.getMessage()); 
 		}
 		catch (SQLException sqlEx) {
-			System.out.println(sqlEx.getMessage()); 
+			System.out.println(sqlEx.getMessage());
 		}
-		//api.createAccount("WKLE", "EWeq", "email@mail.mail");
 	}
 }

@@ -67,6 +67,9 @@ public class SteamCLI {
 			case "price":
 				printProductPrice(input[2], input[3]);
 				break;
+			case "ach":
+				printProductAchievements(input[2], input[3]);
+				break;
 			default:
 				System.err.println(input[0] + " " + input[1] + ": no such command");
 		}
@@ -115,7 +118,7 @@ public class SteamCLI {
 		}
 	}
 
-	private  void printProductPrice(String productName, String currency) {
+	private void printProductPrice(String productName, String currency) {
 		try {
 			Currency c = Currency.getFromName(currency);
 			Product p = Product.getFromName(productName);
@@ -123,6 +126,26 @@ public class SteamCLI {
 		}
 		catch (Exception e) {
 			System.err.println("Could not fetch data for this product and price");
+			System.err.println(e.getMessage());
+			System.exit(1);
+		}
+	}
+
+	private void printProductAchievements(String productName, String language) {
+		try {
+			Language l = Language.getFromName(language);
+			Product p = Product.getFromName(productName);
+			List<Achievement> achList = p.getAchievements();
+			for (Achievement a : achList) {
+				String desc = a.getDescription(l, false);
+				if (desc != null)
+					System.out.println(a.getName(l) + ": " + a.getDescription(l, false));
+				else
+					System.out.println("Untranslated achievement :(");
+			}
+		}
+		catch (Exception e) {
+			System.err.println("Could not print achievement data");
 			System.err.println(e.getMessage());
 			System.exit(1);
 		}
@@ -140,6 +163,7 @@ public class SteamCLI {
 		System.out.println("order removeitem <orderid> <productname>");
 		System.out.println("price add <productname> <currency> <value>");
 		System.out.println("price remove <productname> <currency>");
+		System.out.println("product ach <productname> <language>");
 		System.out.println("product price <productname> <currency>");
 	}
 
