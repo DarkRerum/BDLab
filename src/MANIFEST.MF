@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
 Created-By: Bundle
-Class-Path: ./lib/ojdbc6.jar
+Class-Path: ./lib/ojdbc6.jar ./lib/jedis-2.9.0.jar
 Main-Class: Main
