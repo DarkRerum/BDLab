@@ -149,7 +149,6 @@ public class Account {
 	}
 
 	private void loadDataFromDB() throws SQLException {
-		Jedis jds = JedisInst.getInstance().getJedis();
 		if (JedisInst.getInstance().getJedis().exists("Account_" + m_id + "_accName")) {
 			loadDataFromRedis();
 			String query = "SELECT avatar FROM accounts WHERE id=?";
