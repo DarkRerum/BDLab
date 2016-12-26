@@ -162,6 +162,8 @@ public class Account {
 			m_avatar = queryResult.getBlob(1);
 		}
 		else {
+			Debug.log("Cache miss on load account " + m_id + " data");
+
 			String query = "SELECT * FROM accounts WHERE id=?";
 
 			PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
@@ -177,6 +179,14 @@ public class Account {
 			long langId = queryResult.getLong(7);
 
 			m_language = Language.getFromId(langId);
+
+			JedisInst.getInstance().getJedis().set("Account_" + m_id + "_accName", m_accountName);
+			JedisInst.getInstance().getJedis().set("Account_" + m_id + "_userName", m_userName);
+			JedisInst.getInstance().getJedis().set("Account_" + m_id + "_email", m_email);
+			JedisInst.getInstance().getJedis().set("Account_" + m_id + "_phoneNumber", "" + m_phoneNumber);
+			JedisInst.getInstance().getJedis().set("Account_" + m_id + "_language", "" + langId);
+
+			Debug.log("Account " + m_id + " data cached");
 		}
 	}
 
@@ -187,7 +197,7 @@ public class Account {
 		m_phoneNumber = Long.parseLong(JedisInst.getInstance().getJedis().get("Account_" + m_id + "_phoneNumber"));
 		m_language = Language.getFromId(Long.parseLong(JedisInst.getInstance().getJedis().get("Account_" + m_id + "_language")));
 
-		Debug.log("Account " + m_id + "pulled from cache");
+		Debug.log("Account " + m_id + " pulled from cache");
 	}
 
 	public List<Product> getOwnedProducts() throws SQLException {
