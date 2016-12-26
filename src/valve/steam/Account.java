@@ -78,6 +78,9 @@ public class Account {
 		ps.setString(1, newName);
 		ps.setLong(2, m_id);
 		ps.execute();
+
+		JedisInst.getInstance().del("Account_" + m_id + "_accName");
+		Debug.log("Account " + m_id + "cache dropped");
 		//Steam.getInstance().getConnection().commit();
 	}
 	
@@ -145,21 +148,45 @@ public class Account {
 	}
 
 	private void loadDataFromDB() throws SQLException {
-		String query = "SELECT * FROM accounts WHERE id=?";
+		if (JedisInst.getInstance().exists("Account_" + m_id + "_accName")) {
+			loadDataFromRedis();
+			String query = "SELECT avatar FROM accounts WHERE id=?";
 
-		PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
-		ps.setLong(1, m_id);
-		ResultSet queryResult = ps.executeQuery();
-		queryResult.next();
-		//long id = queryResult.getLong(1);
-		m_accountName = queryResult.getString(2);
-		m_userName = queryResult.getString(3);
-		m_email = queryResult.getString(4);
-		m_avatar = queryResult.getBlob(5);
-		m_phoneNumber = queryResult.getLong(6);
-		long langId = queryResult.getLong(7);
+			PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
+			ps.setLong(1, m_id);
 
-		m_language = Language.getFromId(langId);
+			ResultSet queryResult = ps.executeQuery();
+			queryResult.next();
+
+			m_avatar = queryResult.getBlob(1);
+		}
+		else {
+			String query = "SELECT * FROM accounts WHERE id=?";
+
+			PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
+			ps.setLong(1, m_id);
+			ResultSet queryResult = ps.executeQuery();
+			queryResult.next();
+			//long id = queryResult.getLong(1);
+			m_accountName = queryResult.getString(2);
+			m_userName = queryResult.getString(3);
+			m_email = queryResult.getString(4);
+			m_avatar = queryResult.getBlob(5);
+			m_phoneNumber = queryResult.getLong(6);
+			long langId = queryResult.getLong(7);
+
+			m_language = Language.getFromId(langId);
+		}
+	}
+
+	private void loadDataFromRedis() throws SQLException{
+		m_accountName = JedisInst.getInstance().get("Account_" + m_id + "_accName");
+		m_userName = JedisInst.getInstance().get("Account_" + m_id + "_userName");
+		m_email = JedisInst.getInstance().get("Account_" + m_id + "_email");
+		m_phoneNumber = Long.parseLong(JedisInst.getInstance().get("Account_" + m_id + "_phoneNumber"));
+		m_language = Language.getFromId(Long.parseLong(JedisInst.getInstance().get("Account_" + m_id + "_language")));
+
+		Debug.log("Account " + m_id + "pulled from cache");
 	}
 
 	public List<Product> getOwnedProducts() throws SQLException {

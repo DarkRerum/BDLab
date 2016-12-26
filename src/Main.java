@@ -15,11 +15,6 @@ public class Main {
 		PasswordExtractor passwordExtractor = new PasswordExtractor();
 		
 		try {
-			Jedis jedis = new Jedis("localhost");
-			jedis.set("foo", "bar");
-			String value = jedis.get("foo");
-			System.err.println(value);
-			
 			Steam.getInstance().resetConnection("jdbc:oracle:thin:@localhost:1521:orbis",
 					passwordExtractor.getUsername(), passwordExtractor.getPassword());
 

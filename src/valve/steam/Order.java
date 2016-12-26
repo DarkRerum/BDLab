@@ -33,7 +33,8 @@ public class Order {
         return m_id;
     }
 
-	public Date getPurchaseDate() {
+	public Date getPurchaseDate() throws SQLException {
+		loadDataFromDB();
 		return m_purchaseDate;
 	}
 
@@ -110,6 +111,10 @@ public class Order {
         cs.setLong(2, m_id);
 
         cs.execute();
+
+		JedisInst.getInstance().del("Order_" + m_id + "_acc");
+		Debug.log("Order" + m_id + "cache dropped");
+
         return cs.getLong(1);
     }
 
@@ -134,34 +139,57 @@ public class Order {
 		loadDataFromDB();
 	}
 
-	private void loadDataFromDB() throws SQLException{
-		String query = "alter session set nls_date_format = 'YYYY-MM-DD'";
-        PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
-        ps.execute();
+	private void loadDataFromDB() throws SQLException {
+		if (JedisInst.getInstance().exists("Order_" + m_id + "_acc")) {
+			loadDataFromRedis();
+		}
+		else {
+			Debug.log("Cache miss on order " + m_id);
+			String query = "alter session set nls_date_format = 'YYYY-MM-DD'";
+			PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
+			ps.execute();
 
-        query = "SELECT id, account_id, purchase_date FROM purchase_orders WHERE id=?";
-        ps = Steam.getInstance().getConnection().prepareStatement(query);
-		ps.setLong(1, m_id);
-		ResultSet queryResult = ps.executeQuery();
-		queryResult.next();
+			query = "SELECT id, account_id, purchase_date FROM purchase_orders WHERE id=?";
+			ps = Steam.getInstance().getConnection().prepareStatement(query);
+			ps.setLong(1, m_id);
+			ResultSet queryResult = ps.executeQuery();
+			queryResult.next();
 
-		String dateString = queryResult.getString(3);
+			String dateString = queryResult.getString(3);
 
-		if (dateString != null) {
+			if (dateString != null) {
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				try {
+					m_purchaseDate = format.parse(dateString);
+				} catch (ParseException parseEx) {
+					throw new SQLException("Unable to parse date");
+				}
+				JedisInst.getInstance().set("Order_" + m_id + "_date", dateString);
+
+			} else
+				m_purchaseDate = null;
+
+			long accountId = queryResult.getLong(2);
+
+			m_account = Account.getFromId(accountId);
+
+			JedisInst.getInstance().set("Order_" + m_id + "_acc", "" + accountId);
+
+			Debug.log("Cached order" + m_id);
+		}
+	}
+
+	private void loadDataFromRedis() throws SQLException {
+		m_account = Account.getFromId(Long.parseLong(JedisInst.getInstance().get("Order_" + m_id + "_acc")));
+		if (JedisInst.getInstance().exists("Order_" + m_id + "_date")) {
 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 			try {
-				m_purchaseDate = format.parse(dateString);
-			}
-			catch (ParseException parseEx) {
+				m_purchaseDate = format.parse(JedisInst.getInstance().get("Order_" + m_id + "_date"));
+			} catch (ParseException parseEx) {
 				throw new SQLException("Unable to parse date");
 			}
-
 		}
-		else
-		m_purchaseDate = null;
-
-        long accountId = queryResult.getLong(2);
-
-		m_account = Account.getFromId(accountId);
+		else m_purchaseDate = null;
+		Debug.log("Pulled from cache order " + m_id);
 	}
 }
