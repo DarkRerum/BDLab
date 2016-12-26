@@ -1,6 +1,6 @@
 all: compile package
 
-LIBPATH = ./lib/ojdbc6.jar:./lib/jedis-2.9.0.jar
+LIBPATH = ./lib/jedis-2.9.0.jar:./lib/ojdbc6.jar
 
 DESTPATH = ./bin
 CLASSPATH = ./bin:./bin/valve/steam:./bin/valve/util
