@@ -57,17 +57,37 @@ public class Product {
 	
 
     public static Product getFromName(String name) throws  SQLException, NotImplementedException {
-        String query = "SELECT * FROM products WHERE name = ?";
+		long parentID;
+		long id;
+		Blob blob = null;
 
-        PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
-		ps.setString(1, name);
-		ResultSet queryResult = ps.executeQuery();
-		queryResult.next();
-        long parentID = queryResult.getLong(4);
+        if (JedisInst.getInstance().getJedis().exists("ProductByName_" + name + "_id")) {
+			id = Long.parseLong(JedisInst.getInstance().getJedis().get("ProductByName_" + name + "_id"));
+			parentID = Long.parseLong(JedisInst.getInstance().getJedis().get("ProductByName_" + name + "_parent"));
+			Debug.log("Product " + name + " pulled from cache");
+		}
+		else {
+			Debug.log("Cache miss on product " + name);
+
+			String query = "SELECT * FROM products WHERE name = ?";
+
+			PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
+			ps.setString(1, name);
+			ResultSet queryResult = ps.executeQuery();
+			queryResult.next();
+			id = queryResult.getLong(1);
+			blob = queryResult.getBlob(3);
+			parentID = queryResult.getLong(4);
+
+			JedisInst.getInstance().getJedis().set("ProductByName_" + name + "_id", "" + id);
+			JedisInst.getInstance().getJedis().set("ProductByName_" + name + "_parent", "" + parentID);
+
+			Debug.log("Product by name " + name + " cached");
+		}
+
 
         if (parentID == 0) {
-            return new Product(queryResult.getLong(1), queryResult.getString(2),
-                    queryResult.getBlob(3), null);
+            return new Product(id, name, blob, null);
         }
         else {
             throw new NotImplementedException();
@@ -75,17 +95,37 @@ public class Product {
     }
 
     public static Product getFromId(Long id) throws  SQLException, NotImplementedException {
-        String query = "SELECT * FROM products WHERE id = ?";
+		long parentID;
+		String name;
+		Blob blob = null;
 
-        PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
-        ps.setLong(1, id);
-        ResultSet queryResult = ps.executeQuery();
-        queryResult.next();
-        long parentID = queryResult.getLong(4);
+		if (JedisInst.getInstance().getJedis().exists("ProductById_" + id + "_name")) {
+			name = JedisInst.getInstance().getJedis().get("ProductById_" + id + "_name");
+			parentID = Long.parseLong(JedisInst.getInstance().getJedis().get("ProductById_" + id + "_parent"));
+			Debug.log("Product " + id + " pulled from cache");
+		}
+		else {
+			Debug.log("Cache miss on product " + id);
+
+			String query = "SELECT * FROM products WHERE id = ?";
+
+			PreparedStatement ps = Steam.getInstance().getConnection().prepareStatement(query);
+			ps.setLong(1, id);
+			ResultSet queryResult = ps.executeQuery();
+			queryResult.next();
+
+			name = queryResult.getString(2);
+			blob = queryResult.getBlob(3);
+			parentID = queryResult.getLong(4);
+
+			JedisInst.getInstance().getJedis().set("ProductById_" + id + "_name", "" + name);
+			JedisInst.getInstance().getJedis().set("ProductById_" + id + "_parent", "" + parentID);
+
+			Debug.log("Product by id " + id + " cached");
+		}
 
         if (parentID == 0) {
-            return new Product(queryResult.getLong(1), queryResult.getString(2),
-                    queryResult.getBlob(3), null);
+            return new Product(id, name, blob, null);
         }
         else {
             throw new NotImplementedException();
