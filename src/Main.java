@@ -13,10 +13,14 @@ public class Main {
 	
 	public static void main(String[] args) {
 		PasswordExtractor passwordExtractor = new PasswordExtractor();
-
-		JedisInst.getInstance().setJedisAddress("localhost");
-
+		/*
+		Jedis jds = new Jedis("daedal.tk", 6379, 10000);
+		jds.set("test", "test");
+		JedisInst.getInstance().setJedisAddress("daedal.tk");
+		JedisInst.getInstance().getJedis().set("test", "test");
+		*/
 		try {
+			JedisInst.getInstance().setJedisAddress("daedal.tk", 6379);
 			Steam.getInstance().resetConnection("jdbc:oracle:thin:@localhost:1521:orbis",
 					passwordExtractor.getUsername(), passwordExtractor.getPassword());
 

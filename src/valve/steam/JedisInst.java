@@ -31,6 +31,13 @@ public class JedisInst {
 		jedisInstance = new Jedis(address);
 	}
 
+	public synchronized void setJedisAddress(String address, int port) {
+		if (jedisInstance != null) {
+			jedisInstance.close();
+		}
+		jedisInstance = new Jedis(address, port);
+	}
+
 	public Jedis getJedis() {
 		return jedisInstance;
 	}

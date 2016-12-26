@@ -134,18 +134,33 @@ public class Product {
 	
 
     public Price getPrice(Currency currency) throws SQLException {
-        //String query = "? := PKG1.GET_PRICE(?, ?)";
-        String query = "{ ? = call PKG1.GET_PRICE(?, ?) }";
-        CallableStatement cs = Steam.getInstance().getConnection().prepareCall(query);
+		float price;
+		if (JedisInst.getInstance().getJedis().exists("Product_"
+				+ m_id + "_price_in_" + currency.toString())) {
+			price = Float.parseFloat(JedisInst.getInstance().getJedis()
+					.get("Product_" + m_id + "_price_in_" + currency.toString()));
 
-        cs.registerOutParameter(1, OracleTypes.NUMBER);
-        cs.setString(2, m_name);
-        cs.setString(3, currency.toString());
+			Debug.log("Product " + m_name + " price in " + currency.toString() + " pulled from cache");
+		}
+		else {
+			Debug.log("Cache miss on product " + m_name + " price in " + currency.toString());
+			//String query = "? := PKG1.GET_PRICE(?, ?)";
+			String query = "{ ? = call PKG1.GET_PRICE(?, ?) }";
+			CallableStatement cs = Steam.getInstance().getConnection().prepareCall(query);
 
-        cs.execute();
-        //System.out.println(cs.getInt(2));
-        float price = cs.getFloat(1);
-        //Steam.getInstance().getConnection().commit();
+			cs.registerOutParameter(1, OracleTypes.NUMBER);
+			cs.setString(2, m_name);
+			cs.setString(3, currency.toString());
+
+			cs.execute();
+			//System.out.println(cs.getInt(2));
+			price = cs.getFloat(1);
+
+			JedisInst.getInstance().getJedis().set("Product_"
+					+ m_id + "_price_in_" + currency.toString(), "" + price);
+			Debug.log("Product " + m_name + " price in " + currency.toString() + " cached");
+			//Steam.getInstance().getConnection().commit();
+		}
 
         return new Price(currency, price);
     }
@@ -161,6 +176,10 @@ public class Product {
 		cs.setNull(5, Types.NULL);
 
 		cs.execute();
+
+		JedisInst.getInstance().getJedis().del("Product_"
+				+ m_id + "_price_in_" + price.getCurrency().toString());
+		Debug.log("Product " + m_name + " price in " + price.getCurrency().toString() + " cache dropped");
     }
 
     public void removePrice(Currency currency) throws SQLException {
@@ -174,6 +193,10 @@ public class Product {
 		cs.setNull(5, Types.NULL);*/
 
 		cs.execute();
+
+		JedisInst.getInstance().getJedis().del("Product_"
+				+ m_id + "_price_in_" + currency.toString());
+		Debug.log("Product " + m_name + " price in " + currency.toString() + " cache dropped");
 	}
 
 	public List<Achievement> getAchievements() throws SQLException{

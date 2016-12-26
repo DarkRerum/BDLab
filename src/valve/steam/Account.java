@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oracle.jdbc.OracleTypes;
+import redis.clients.jedis.Jedis;
 
 public class Account {
 	private long m_id;
@@ -148,6 +149,7 @@ public class Account {
 	}
 
 	private void loadDataFromDB() throws SQLException {
+		Jedis jds = JedisInst.getInstance().getJedis();
 		if (JedisInst.getInstance().getJedis().exists("Account_" + m_id + "_accName")) {
 			loadDataFromRedis();
 			String query = "SELECT avatar FROM accounts WHERE id=?";
