@@ -13,7 +13,9 @@ public class Main {
 	
 	public static void main(String[] args) {
 		PasswordExtractor passwordExtractor = new PasswordExtractor();
-		
+
+		JedisInst.getInstance().setJedisAddress("localhost");
+
 		try {
 			Steam.getInstance().resetConnection("jdbc:oracle:thin:@localhost:1521:orbis",
 					passwordExtractor.getUsername(), passwordExtractor.getPassword());

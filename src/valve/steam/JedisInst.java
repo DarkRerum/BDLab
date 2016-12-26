@@ -6,15 +6,32 @@ import redis.clients.jedis.Jedis;
  * Created by 123 on 26.12.2016.
  */
 public class JedisInst {
-	private static Jedis jedisInstance = new Jedis();
+	private static volatile JedisInst m_instance;
+	private Jedis jedisInstance = null;
 
-	public static Jedis getInstance() {
-		return jedisInstance;
-	}
-
-	public synchronized void setAddress(String address) {
-		jedisInstance = new Jedis(address);
+	public static JedisInst getInstance() {
+		JedisInst localInstance = m_instance;
+		if (localInstance == null) {
+			synchronized (JedisInst.class) {
+				localInstance = m_instance;
+				if (localInstance == null) {
+					m_instance = localInstance = new JedisInst();
+				}
+			}
+		}
+		return localInstance;
 	}
 
 	private JedisInst() {}
+
+	public synchronized void setJedisAddress(String address) {
+		if (jedisInstance != null) {
+			jedisInstance.close();
+		}
+		jedisInstance = new Jedis(address);
+	}
+
+	public Jedis getJedis() {
+		return jedisInstance;
+	}
 }

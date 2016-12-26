@@ -79,7 +79,7 @@ public class Account {
 		ps.setLong(2, m_id);
 		ps.execute();
 
-		JedisInst.getInstance().del("Account_" + m_id + "_accName");
+		JedisInst.getInstance().getJedis().del("Account_" + m_id + "_accName");
 		Debug.log("Account " + m_id + "cache dropped");
 		//Steam.getInstance().getConnection().commit();
 	}
@@ -148,7 +148,7 @@ public class Account {
 	}
 
 	private void loadDataFromDB() throws SQLException {
-		if (JedisInst.getInstance().exists("Account_" + m_id + "_accName")) {
+		if (JedisInst.getInstance().getJedis().exists("Account_" + m_id + "_accName")) {
 			loadDataFromRedis();
 			String query = "SELECT avatar FROM accounts WHERE id=?";
 
@@ -180,11 +180,11 @@ public class Account {
 	}
 
 	private void loadDataFromRedis() throws SQLException{
-		m_accountName = JedisInst.getInstance().get("Account_" + m_id + "_accName");
-		m_userName = JedisInst.getInstance().get("Account_" + m_id + "_userName");
-		m_email = JedisInst.getInstance().get("Account_" + m_id + "_email");
-		m_phoneNumber = Long.parseLong(JedisInst.getInstance().get("Account_" + m_id + "_phoneNumber"));
-		m_language = Language.getFromId(Long.parseLong(JedisInst.getInstance().get("Account_" + m_id + "_language")));
+		m_accountName = JedisInst.getInstance().getJedis().get("Account_" + m_id + "_accName");
+		m_userName = JedisInst.getInstance().getJedis().get("Account_" + m_id + "_userName");
+		m_email = JedisInst.getInstance().getJedis().get("Account_" + m_id + "_email");
+		m_phoneNumber = Long.parseLong(JedisInst.getInstance().getJedis().get("Account_" + m_id + "_phoneNumber"));
+		m_language = Language.getFromId(Long.parseLong(JedisInst.getInstance().getJedis().get("Account_" + m_id + "_language")));
 
 		Debug.log("Account " + m_id + "pulled from cache");
 	}

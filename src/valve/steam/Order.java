@@ -112,7 +112,7 @@ public class Order {
 
         cs.execute();
 
-		JedisInst.getInstance().del("Order_" + m_id + "_acc");
+		JedisInst.getInstance().getJedis().del("Order_" + m_id + "_acc");
 		Debug.log("Order" + m_id + "cache dropped");
 
         return cs.getLong(1);
@@ -140,7 +140,7 @@ public class Order {
 	}
 
 	private void loadDataFromDB() throws SQLException {
-		if (JedisInst.getInstance().exists("Order_" + m_id + "_acc")) {
+		if (JedisInst.getInstance().getJedis().exists("Order_" + m_id + "_acc")) {
 			loadDataFromRedis();
 		}
 		else {
@@ -164,7 +164,7 @@ public class Order {
 				} catch (ParseException parseEx) {
 					throw new SQLException("Unable to parse date");
 				}
-				JedisInst.getInstance().set("Order_" + m_id + "_date", dateString);
+				JedisInst.getInstance().getJedis().set("Order_" + m_id + "_date", dateString);
 
 			} else
 				m_purchaseDate = null;
@@ -173,18 +173,18 @@ public class Order {
 
 			m_account = Account.getFromId(accountId);
 
-			JedisInst.getInstance().set("Order_" + m_id + "_acc", "" + accountId);
+			JedisInst.getInstance().getJedis().set("Order_" + m_id + "_acc", "" + accountId);
 
 			Debug.log("Cached order" + m_id);
 		}
 	}
 
 	private void loadDataFromRedis() throws SQLException {
-		m_account = Account.getFromId(Long.parseLong(JedisInst.getInstance().get("Order_" + m_id + "_acc")));
-		if (JedisInst.getInstance().exists("Order_" + m_id + "_date")) {
+		m_account = Account.getFromId(Long.parseLong(JedisInst.getInstance().getJedis().get("Order_" + m_id + "_acc")));
+		if (JedisInst.getInstance().getJedis().exists("Order_" + m_id + "_date")) {
 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 			try {
-				m_purchaseDate = format.parse(JedisInst.getInstance().get("Order_" + m_id + "_date"));
+				m_purchaseDate = format.parse(JedisInst.getInstance().getJedis().get("Order_" + m_id + "_date"));
 			} catch (ParseException parseEx) {
 				throw new SQLException("Unable to parse date");
 			}
